@@ -55,4 +55,10 @@ for i,dat in enumerate(alldat):
 number_trials=number_trials.astype('int')
 number_neurons=number_neurons.astype('int')
 
+for i in range(len(alldat)):
+    np.save('Spike_data_{}.npy'.format(i),spike_data[i])
+    np.save('Response_time_{}.npy'.format(i),response_time[i])
+    np.save('Trial_outcome_{}.npy'.format(i),trial_outcome[i])
+np.save('Stimulation_time.npy',stim_time)
+    
     
