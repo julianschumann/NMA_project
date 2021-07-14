@@ -129,10 +129,9 @@ if make_data:
         X=np.load('Pupil_area_'+name+'.npy')
         t_r=np.load('Response_time'+name+'.npy')
         T=np.tile(np.linspace(0,2490,250)[np.newaxis,:],(len(X),1))
-        T=np.logical_and(T>0.5 , T<np.tile(t_r[:,np.newaxis],(1,X.shape[1])))
-        
-        
-        X=(X-np.mean(X,1)[:,np.newaxis])/np.std(X,1)[:,np.newaxis]
+        T=T<np.tile(t_r*1000,(1,X.shape[1]))
+        X[T==False]=0
+        X=X[:,50:]
         
         
         y=np.load('Trial_outcome_'+name+'.npy')
@@ -160,7 +159,7 @@ else:
 
     for i,name in enumerate(Names):  
         Beta.append(np.load('R_pupil_2/C_'+name+'.npy'))
-        accuracy_cross_val.append(np.load('R_pupil/Accuracy_val_'+name+'.npy'))
+        accuracy_cross_val.append(np.load('R_pupil_2/Accuracy_val_'+name+'.npy'))
         y=np.load('Trial_outcome_'+name+'.npy')
         y=np.maximum(y,0)
         y_pred=np.load('R_pupil_2/Trial_outcome_pred_'+name+'.npy')
