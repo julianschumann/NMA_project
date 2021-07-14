@@ -44,6 +44,9 @@ number_neurons=np.zeros(len(alldat))
 neurons=[]
 spike_data=[]
 response_time=[]
+pupil_area=[]
+names=[]
+face_energy=[]
 stim_time=0.5
 for i,dat in enumerate(alldat):
     number_trials[i]=len(dat['contrast_left'])
@@ -52,8 +55,14 @@ for i,dat in enumerate(alldat):
     trial_outcome.append(dat['feedback_type'])
     spike_data.append(dat['spks'])
     response_time.append(dat['response_time'])
+    pupil_area.append(dat['pupil'][0])
+    names.append(dat['mouse_name'])
+    face_energy.append(dat['face'][0])
 number_trials=number_trials.astype('int')
 number_neurons=number_neurons.astype('int')
+names=np.array(names)
+
+Names=np.unique(names)
 
 for i in range(len(alldat)):
     np.save('Spike_data_{}.npy'.format(i),spike_data[i])
@@ -61,4 +70,29 @@ for i in range(len(alldat)):
     np.save('Trial_outcome_{}.npy'.format(i),trial_outcome[i])
 np.save('Stimulation_time.npy',stim_time)
     
+
+pupil_area_names=[]
+face_energy_names=[]
+trial_outcome_names=[]
+response_time_names=[]
+for i,name in enumerate(Names):
+    name_id=np.where(names==name)[0]
+    pupili=[]
+    triali=[]
+    facei=[]
+    timei=[]
+    for j in name_id:
+        pupili.append(pupil_area[j])
+        triali.append(trial_outcome[j])
+        facei.append(face_energy[j])
+        timei.append(response_time[j])
+    pupil_area_names.append(np.concatenate(pupili,0))
+    trial_outcome_names.append(np.concatenate(triali,0))
+    face_energy_names.append(np.concatenate(facei,0))
+    response_time_names.append(np.concatenate(timei,0))
     
+    np.save('Pupil_area_'+name+'.npy',pupil_area_names[i])
+    np.save('Trial_outcome_'+name+'.npy',trial_outcome_names[i])
+    np.save('Face_energy_'+name+'.npy',face_energy_names[i])
+    np.save('Response_time'+name+'.npy',response_time_names[i])
+np.save('Mice_names.npy',np.array(Names))
